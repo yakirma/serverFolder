@@ -47,10 +47,6 @@ function CIFAR:__init(path, mode, batchSize)
 
 end
 
-function CIFAR:printAugLabelsFix()
-   print(self.augLabelsFix)
-end
-
 function CIFAR:preprocess(mean, std)
    mean = mean or self.data:mean(1)
    std = std or self.data:std() -- Complete std!
@@ -69,13 +65,6 @@ function CIFAR:sampleIndices(batch, indices)
                   }
    batch.outputs:copy(self.labels:index(1, indices))
    if self.mode == "train" then
-      
-      for i=1, n do
-        local idx = batch.outputs[i]
-        batch.augLabels:narrow(1,i,1):copy(self.augLabels:narrow(1,idx,1))
-        batch.augLabelsFix:narrow(1,i,1):copy(self.augLabelsFix:narrow(1,idx,1))
-      end
-      
       batch.inputs:zero()
       for i,index in ipairs(torch.totable(indices)) do
          -- Copy self.data[index] into batch.inputs[i], with
@@ -125,12 +114,7 @@ end
 function CIFAR:getBatch()
    -- You should use sample instead! :-)
    local batch = self:sample(self.batchSize)
-   --print(batch.augLabels)
-   return batch.inputs, batch.outputs, batch.augLabels, batch.augLabelsFix
-end
-
-function CIFAR:getCodeWords()
-  return self.augLabels
+   return batch.inputs, batch.outputs
 end
 
 -- cifar = Dataset.CIFAR("/Users/michael/cifar10/cifar-10-batches-t7", "train")

@@ -33,22 +33,19 @@ local nninit = require 'nninit'
 
 opt = lapp[[
 --batchSize       (default 128)     Sub-batch size
---iterSize        (default 1)       How many sub-batches in each batch
 --dataRoot        (default /mnt/cifar) Data root folder
 --loadFrom        (default "")      Model to load
---experimentName  (default "snapshots/cifar-residual-experiment1")
 --saveTo          (default "")      save models and codewords at that location
---trainLoopNum    (default 220)     number of train loops to run
 --device          (default 1)       gpu num to use
---runNum          (default 0)       number of test
 --hier            (default "Hand")  type of hierarchy used for the training
 --epochs          (default 300)     number of epochs to run
 --doValid         (default 0)       do tests on validation set (also)
+--codeSize        (default 512)     embeddings code size
 ]]
 print(opt)
 
 cutorch.setDevice(opt.device)
-codeSize = 512
+codeSize = opt.codeSize
 
 -- create data loader
 dataTrain = Dataset.CIFAR(opt.dataRoot, "train", opt.batchSize)
@@ -69,8 +66,8 @@ elseif opt.hier == "Imgnt" then
 elseif opt.hier == "Rand" then
 	treeVecMat = torch.load('treeVecMatRand.t7', 'ascii'):t()
 end
-for i = 2,treeVecMat1:size(2) do
-treeVecMat1:narrow(2,i,1):mul(1/i)
+for i = 2,treeVecMat:size(2) do
+treeVecMat:narrow(2,i,1):mul(1/i)
 end
 
 -- load different hierarchies neigbours ranks matrices
@@ -81,7 +78,7 @@ neighboursMatImgnt = torch.load('neighboursMatImgnt.t7', 'ascii'):t()
 
 model1 = nn.Sequential() 
 cnnModel = nn.Sequential()
-print("Loading CNN model from "..opt.loadFrom)
+print("Loa/treeding CNN model from "..opt.loadFrom)
 modelFromFile = torch.load(opt.loadFrom)
 print("Done.")
 cnnModel:add(modelFromFile)
@@ -206,8 +203,7 @@ function forwardBackwardBatch(isTrainCodes)
 			sgdState7.learningRate = 0.1
 			cnnSgdState.learningRate = 0.1
 		end
-		trainCnn = 1
-		treeVecMat = treeVecMat1 
+		trainCnn = 1 
 	elseif cnnSgdState.epochCounter < 100 then
 		trainCodes = 1
 		if trainCodes == 0 then
@@ -221,7 +217,6 @@ function forwardBackwardBatch(isTrainCodes)
 		loss2Coeff = 1
 		loss3Coeff = 0.1
 		trainCnn = 1
-		treeVecMat = treeVecMat1 
 	end
 
 	rankLoss = nn.CosineEmbeddingCriterion(rho);
@@ -229,9 +224,7 @@ function forwardBackwardBatch(isTrainCodes)
 
 	loss_val1 = 0
 	loss_val2 = 0
-	local N = opt.iterSize
 	local inputs, labels
-	for i=1,N do
 	inputs, labels = dataTrain:getBatch()
 	inputs = inputs:cuda()
 	labels = labels:cuda()
@@ -333,26 +326,14 @@ function forwardBackwardBatch(isTrainCodes)
 	
 	-- train total model
 	df_dw4 = model:backward({inputs1, lebelsIndicVecs:cuda()}, {{loss1Coeff * df_dw2[1], loss3Coeff * df_dw3}, loss2Coeff * df_dw2[2]})
-
 	
 	if trainCnn == 1 then
 	    -- train cnn model
 		cnnModel:backward(inputs, df_dw4[1])
 	end
 
-	loss_val1 = loss_val1 / N
-	loss_val2 = loss_val2 / N
-	loss_val2 = 0
-	gradients:mul( 1.0 / N )
-
-	if hasWorkbook then
-	lossLog{nImages = sgdState.nSampledImages,
-	loss = loss_val1}
-	end
-
-	return loss_val1,loss_val2, weights, sgdState, gradients, cnnGradients, inputs:size(1) * N
+	return loss_val1,loss_val2, weights, sgdState, gradients, cnnGradients, inputs:size(1)
 end
-
 
 function evalModel()
 	
@@ -369,7 +350,7 @@ function evalModel()
 	print("Visual heirarchical Precision = ", results.heirPrecisionVis)
 	print("Imagenet heirarchical Precision = ", results.heirPrecisionImgnt)
 
-	if opt.doValid == 1
+	if opt.doValid == 1 then
 		-- print validation results
 		trainCodes = 1	
 		print("----------------- Embeddings Valid -----------------")
@@ -392,8 +373,6 @@ function evalModel()
 		print("saving code words to ", opt.saveTo, "./CodeWords.t7")
 		torch.save(opt.saveTo .. "./CodeWords.t7", learntCodeWords)
 		print("Done.")
-	end
-
 	end
 
 	if (cnnSgdState.epochCounter or 0) > opt.epochs then

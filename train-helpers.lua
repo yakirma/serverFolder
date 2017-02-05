@@ -40,11 +40,8 @@ function evaluateModel(model, cnnModel, datasetTest, dataTrain, batchSize, train
    for i=1,#batches do
        collectgarbage(); collectgarbage();
        local results = datasetTest:sampleIndices(nil, batches[i])
-       local batch, labels, augLabels, augLabelsFix = results.inputs, results.outputs, results.augLabels, results.augLabelsFix
+       local batch, labels = results.inputs, results.outputs
        labels = labels:long()
-       augLabels = augLabels:float()
-       augLabels:renorm(2,1,1)
-       augLabelsFix = augLabelsFix:float()
 
        eye = torch.eye(100)
        idx1 = 0
@@ -55,18 +52,12 @@ function evaluateModel(model, cnnModel, datasetTest, dataTrain, batchSize, train
 	      	idx1 =  i
 	      end
        end
---print(#lebelsIndicVecs:size())
-
-       inputs = cnnModel:forward(batch:cuda())
-       --local Y = model:forward({inputs, lebelsIndicVecs:cuda()})
-       --local Y = model:forward(batch:cuda())
-
+       inputs = cnnModel:forward(batch:cuda()) 
        total = total + labels:size(1) 
 if trainCodes == 0 then
 
        local Y = model:forward(inputs:cuda())
 
-       --y = Y[1]:float()
        y = Y:float()
        local _, indices = torch.sort(y, 2, true)
        -- indices has shape (batchSize, nClasses)
@@ -76,44 +67,26 @@ if trainCodes == 0 then
        hadCorrect1 = hadCorrect1 + torch.eq(top1, labels):sum()
        hadCorrect5 = hadCorrect5 + torch.eq(top5, labels:view(-1, 1):expandAs(top5)):sum()
        y1 = y
-       --xlua.progress(total, datasetTest:size())
 
 else
        local Y = model:forward({inputs, lebelsIndicVecs:cuda()})
 
        y1 = Y[1][1]:float()
-       --y2 = augLabels:float():renorm(2,1,1)
        y2 = Y[2]:float()
-       y4 = Y[1][2]:float() 	   
---[[		for j=1,y2:size(1) do
-		learntCodeWords[labels[j]] --[[= y2[j]:float()
-         	end --]]	   
-
-if idx1 > 0 then
---       print(y1[idx1]:narrow(1,1,10))
-end
-       --codeWords = dataTrain:getCodeWords():float():renorm(2,1,1)
+       y4 = Y[1][2]:float()
 	   
-	   codeWords = learntCodeWords--:renorm(2,1,1)
-	   
---       codeWords[torch.lt(codeWords,1)] = -1
+       codeWords = learntCodeWords	  
        top1 = labels:clone():zero() 
        top5 = torch.LongTensor(labels:size(1), 5):zero()
        top30 = torch.LongTensor(labels:size(1), 30):zero()
 
-        --for j=1,y1:size(1) do
-		-- find nearest codeword
-			--a, ranks = torch.sort(torch.sum(torch.pow(codeWords-y1:narrow(1,j,1):repeatTensor(codeWords:size(1),1),2),2),1)
-
-                local _, ranks = torch.sort(y4, 2, true)			
-       		top1 = ranks:select(2,1)
-	        top5 = ranks:narrow(2,1,5) --narrow(1,1,5)
-                top30 = ranks:narrow(2,1,30) --narrow(1,1,30)
-	--end
-
+        
+       local _, ranks = torch.sort(y4, 2, true)			
+       top1 = ranks:select(2,1)
+       top5 = ranks:narrow(2,1,5)
+       top30 = ranks:narrow(2,1,30)
        hadCorrect1 = hadCorrect1 + torch.eq(top1, labels):sum()
        hadCorrect5 = hadCorrect5 + torch.eq(top5, labels:view(-1, 1):expandAs(top5)):sum()
-
        mse = nn.MSECriterion()
        mseLoss = mse:forward(y1, y2)
 end
@@ -126,7 +99,6 @@ end
 
        for j=1,y1:size(1) do
                 for i = 1,30 do
---                      print(neighbours[j]:narrow(1,i,1))
                         heirPrecision =  heirPrecision + torch.eq(top30[j], neighbours[j][i]):sum()/30
                 end
        end
@@ -140,7 +112,6 @@ end
 
        for j=1,y1:size(1) do
                 for i = 1,30 do
---                      print(neighbours[j]:narrow(1,i,1))
                         heirPrecisionVis =  heirPrecisionVis + torch.eq(top30[j], neighbours[j][i]):sum()/30
                 end
        end
@@ -153,7 +124,6 @@ end
 
        for j=1,y1:size(1) do
                 for i = 1,30 do
---                      print(neighbours[j]:narrow(1,i,1))
                         heirPrecisionImgnt =  heirPrecisionImgnt + torch.eq(top30[j], neighbours[j][i]):sum()/30
                 end
        end
@@ -163,16 +133,11 @@ end
 end
 
 function TrainingHelpers.trainForever(forwardBackwardBatch, cnnWeights, cnnSgdState, epochSize, afterEpoch)
-  
-   print("original epoch size = ", epochSize)
-   epochSize = epochSize/1
-   print("new epoch size = ", epochSize)
-
  
    local d = Date{os.date()}
    local modelTag = string.format("%04d%02d%02d-%d",
       d:year(), d:month(), d:day(), torch.random())
-   --local isInit = 1
+
    while true do -- Each epoch
       cnnSgdState.epochSize = epochSize
       cnnSgdState.epochCounter = cnnSgdState.epochCounter or 0
@@ -185,14 +150,6 @@ function TrainingHelpers.trainForever(forwardBackwardBatch, cnnWeights, cnnSgdSt
 
       collectgarbage(); collectgarbage()
       -- Run forward and backward pass on inputs and labels
---[[      local loss_val, loss_val2, weigths, sgdState, gradients, cnnGradients, batchProcessed = forwardBackwardBatch(0)
-
-     -- print("learning rate = ", sgdState.learningRate)
-      -- SGD step: modifies weights in-place
-      whichOptimMethod(function() return loss_val+loss_val2, gradients end,
-                       weights,
-                       sgdState)
---]]
       local loss_val, loss_val2, weigths, sgdState, gradients, cnnGradients, batchProcessed = forwardBackwardBatch()
 
      -- print("learning rate = ", sgdState.learningRate)
