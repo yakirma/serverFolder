@@ -364,15 +364,11 @@ function evalModel()
 	if opt.saveTo ~= "" then
 		print("saving cnn model to ", opt.saveTo, "/cnnModel_save.model")
 		torch.save(opt.saveTo .. "/cnnModel_save.model", cnnModel)
-		print("Done.")
 		
 		print("saving model to ", opt.saveTo, "/model_save.model")
-		torch.save(opt.saveTo .. "/model_save.model", model)
-		print("Done.")
-		
+		torch.save(opt.saveTo .. "/model_save.model", model)	
 		print("saving code words to ", opt.saveTo, "./CodeWords.t7")
-		torch.save(opt.saveTo .. "./CodeWords.t7", learntCodeWords)
-		print("Done.")
+		torch.save(opt.saveTo .. "/CodeWords.t7", learntCodeWords)
 	end
 
 	if (cnnSgdState.epochCounter or 0) > opt.epochs then
