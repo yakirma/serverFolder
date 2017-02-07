@@ -27,5 +27,5 @@ echo "test finished. results products at ./results directory"
 
 testDirName="results_"`date | tr " :" _`"_"$testDiscript
 mkdir testResults/$testDirName
-cp -r results/logs testResults/$testDirName
-echo "logs copied to testResults/"$testDirName
+cp -r results testResults/$testDirName
+echo "results copied to testResults/"$testDirName
