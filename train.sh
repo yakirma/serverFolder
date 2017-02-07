@@ -1,5 +1,7 @@
 #!/bin/bash
 
+testDiscript="run_for_4_hierarchies_for_20_epochs"
+
 rm -r results
 mkdir results
 
@@ -20,4 +22,10 @@ mkdir -p results/objects/Rand
 th train-cifar100.lua --hier Rand --loadFrom ./model.model --dataRoot ../cifar-100-batches-t7/ --saveTo results/objects/Rand --device 4 > results/logs/Rand/log.txt --epochs 20 &
 
 wait
-echo "test finished. results at ./results directory"
+
+echo "test finished. results products at ./results directory"
+
+testDirName="results_"`date | tr " :" _`"_"$testDiscript
+mkdir testResults/$testDirName
+cp -r results/logs testResults/$testDirName
+echo "logs copied to testResults/"$testDirName
