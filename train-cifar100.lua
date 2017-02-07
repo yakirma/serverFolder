@@ -363,8 +363,7 @@ function evalModel()
 
 	if opt.saveTo ~= "" then
 		print("saving cnn model to ", opt.saveTo, "/cnnModel_save.model")
-		torch.save(opt.saveTo .. "/cnnModel_save.model", cnnModel)
-		
+		torch.save(opt.saveTo .. "/cnnModel_save.model", cnnModel)		
 		print("saving model to ", opt.saveTo, "/model_save.model")
 		torch.save(opt.saveTo .. "/model_save.model", model)	
 		print("saving code words to ", opt.saveTo, "./CodeWords.t7")

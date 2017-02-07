@@ -1,0 +1,318 @@
+{
+  dataRoot : "../cifar-100-batches-t7/"
+  hier : "Rand"
+  device : 4
+  codeSize : 512
+  loadFrom : "./model.model"
+  saveTo : "results/Rand"
+  batchSize : 128
+  doValid : 0
+  epochs : 20
+}
+Dataset size: 	50000	
+Loa/treeding CNN model from ./model.model	
+Done.	
+Done	
+train loss = 	0	
+hierarchy train loss = 	0	
+Evaluating...	
+----------------- Embeddings Test -----------------	
+Accuracy = 	0.992	
+Handcrafted heirarchical Precision = 	0.30217333333319	
+Visual heirarchical Precision = 	0.28468666666654	
+Imagenet heirarchical Precision = 	0.29538666666653	
+saving cnn model to 	results/Rand	/cnnModel_save.model	
+saving model to 	results/Rand	/model_save.model	
+saving code words to 	results/Rand	./CodeWords.t7	
+train loss = 	0.45437222719193	
+hierarchy train loss = 	0.23344151675701	
+Evaluating...	
+----------------- Embeddings Test -----------------	
+Accuracy = 	0.3256	
+Handcrafted heirarchical Precision = 	0.48850666666635	
+Visual heirarchical Precision = 	0.48455999999969	
+Imagenet heirarchical Precision = 	0.47964666666636	
+saving cnn model to 	results/Rand	/cnnModel_save.model	
+saving model to 	results/Rand	/model_save.model	
+saving code words to 	results/Rand	./CodeWords.t7	
+
+
+----- Epoch 1 -----	
+train loss = 	0.45012694597244	
+hierarchy train loss = 	0.22882987558842	
+Evaluating...	
+----------------- Embeddings Test -----------------	
+Accuracy = 	0.314	
+Handcrafted heirarchical Precision = 	0.49011333333302	
+Visual heirarchical Precision = 	0.48965333333302	
+Imagenet heirarchical Precision = 	0.48139333333303	
+saving cnn model to 	results/Rand	/cnnModel_save.model	
+saving model to 	results/Rand	/model_save.model	
+saving code words to 	results/Rand	./CodeWords.t7	
+
+
+----- Epoch 2 -----	
+train loss = 	0.45119935274124	
+hierarchy train loss = 	0.22651366889477	
+Evaluating...	
+----------------- Embeddings Test -----------------	
+Accuracy = 	0.309	
+Handcrafted heirarchical Precision = 	0.48994666666635	
+Visual heirarchical Precision = 	0.48841999999969	
+Imagenet heirarchical Precision = 	0.47896666666636	
+saving cnn model to 	results/Rand	/cnnModel_save.model	
+saving model to 	results/Rand	/model_save.model	
+saving code words to 	results/Rand	./CodeWords.t7	
+
+
+----- Epoch 3 -----	
+train loss = 	0.43712681531906	
+hierarchy train loss = 	0.22784559428692	
+Evaluating...	
+----------------- Embeddings Test -----------------	
+Accuracy = 	0.3088	
+Handcrafted heirarchical Precision = 	0.48875333333302	
+Visual heirarchical Precision = 	0.48813333333302	
+Imagenet heirarchical Precision = 	0.4792399999997	
+saving cnn model to 	results/Rand	/cnnModel_save.model	
+saving model to 	results/Rand	/model_save.model	
+saving code words to 	results/Rand	./CodeWords.t7	
+
+
+----- Epoch 4 -----	
+train loss = 	0.42907139658928	
+hierarchy train loss = 	0.22934092581272	
+Evaluating...	
+----------------- Embeddings Test -----------------	
+Accuracy = 	0.308	
+Handcrafted heirarchical Precision = 	0.48929333333302	
+Visual heirarchical Precision = 	0.48966666666635	
+Imagenet heirarchical Precision = 	0.4791799999997	
+saving cnn model to 	results/Rand	/cnnModel_save.model	
+saving model to 	results/Rand	/model_save.model	
+saving code words to 	results/Rand	./CodeWords.t7	
+
+
+----- Epoch 5 -----	
+train loss = 	0.44387349486351	
+hierarchy train loss = 	0.23059064149857	
+Evaluating...	
+----------------- Embeddings Test -----------------	
+Accuracy = 	0.31	
+Handcrafted heirarchical Precision = 	0.48994666666635	
+Visual heirarchical Precision = 	0.49106666666635	
+Imagenet heirarchical Precision = 	0.48078666666636	
+saving cnn model to 	results/Rand	/cnnModel_save.model	
+saving model to 	results/Rand	/model_save.model	
+saving code words to 	results/Rand	./CodeWords.t7	
+
+
+----- Epoch 6 -----	
+train loss = 	0.43323573470116	
+hierarchy train loss = 	0.22688311338425	
+Evaluating...	
+----------------- Embeddings Test -----------------	
+Accuracy = 	0.309	
+Handcrafted heirarchical Precision = 	0.49241333333302	
+Visual heirarchical Precision = 	0.49266666666635	
+Imagenet heirarchical Precision = 	0.48229333333303	
+saving cnn model to 	results/Rand	/cnnModel_save.model	
+saving model to 	results/Rand	/model_save.model	
+saving code words to 	results/Rand	./CodeWords.t7	
+
+
+----- Epoch 7 -----	
+train loss = 	0.42798122763634	
+hierarchy train loss = 	0.23038053512573	
+Evaluating...	
+----------------- Embeddings Test -----------------	
+Accuracy = 	0.304	
+Handcrafted heirarchical Precision = 	0.49210666666635	
+Visual heirarchical Precision = 	0.49350666666635	
+Imagenet heirarchical Precision = 	0.48189333333303	
+saving cnn model to 	results/Rand	/cnnModel_save.model	
+saving model to 	results/Rand	/model_save.model	
+saving code words to 	results/Rand	./CodeWords.t7	
+
+
+----- Epoch 8 -----	
+train loss = 	0.42148789763451	
+hierarchy train loss = 	0.23199553787708	
+Evaluating...	
+----------------- Embeddings Test -----------------	
+Accuracy = 	0.3072	
+Handcrafted heirarchical Precision = 	0.49387999999968	
+Visual heirarchical Precision = 	0.49345999999968	
+Imagenet heirarchical Precision = 	0.48389333333302	
+saving cnn model to 	results/Rand	/cnnModel_save.model	
+saving model to 	results/Rand	/model_save.model	
+saving code words to 	results/Rand	./CodeWords.t7	
+
+
+----- Epoch 9 -----	
+train loss = 	0.423121124506	
+hierarchy train loss = 	0.22860108315945	
+Evaluating...	
+----------------- Embeddings Test -----------------	
+Accuracy = 	0.304	
+Handcrafted heirarchical Precision = 	0.49630666666635	
+Visual heirarchical Precision = 	0.49753333333301	
+Imagenet heirarchical Precision = 	0.48785999999969	
+saving cnn model to 	results/Rand	/cnnModel_save.model	
+saving model to 	results/Rand	/model_save.model	
+saving code words to 	results/Rand	./CodeWords.t7	
+
+
+----- Epoch 10 -----	
+train loss = 	0.42988708615303	
+hierarchy train loss = 	0.2349004894495	
+Evaluating...	
+----------------- Embeddings Test -----------------	
+Accuracy = 	0.3048	
+Handcrafted heirarchical Precision = 	0.49647999999968	
+Visual heirarchical Precision = 	0.49734666666635	
+Imagenet heirarchical Precision = 	0.48719999999969	
+saving cnn model to 	results/Rand	/cnnModel_save.model	
+saving model to 	results/Rand	/model_save.model	
+saving code words to 	results/Rand	./CodeWords.t7	
+
+
+----- Epoch 11 -----	
+train loss = 	0.4279887676239	
+hierarchy train loss = 	0.23065061867237	
+Evaluating...	
+----------------- Embeddings Test -----------------	
+Accuracy = 	0.3088	
+Handcrafted heirarchical Precision = 	0.49847333333301	
+Visual heirarchical Precision = 	0.50183999999968	
+Imagenet heirarchical Precision = 	0.48996666666635	
+saving cnn model to 	results/Rand	/cnnModel_save.model	
+saving model to 	results/Rand	/model_save.model	
+saving code words to 	results/Rand	./CodeWords.t7	
+
+
+----- Epoch 12 -----	
+train loss = 	0.40828970074654	
+hierarchy train loss = 	0.22725151479244	
+Evaluating...	
+----------------- Embeddings Test -----------------	
+Accuracy = 	0.3042	
+Handcrafted heirarchical Precision = 	0.50087333333301	
+Visual heirarchical Precision = 	0.50240666666634	
+Imagenet heirarchical Precision = 	0.49167999999968	
+saving cnn model to 	results/Rand	/cnnModel_save.model	
+saving model to 	results/Rand	/model_save.model	
+saving code words to 	results/Rand	./CodeWords.t7	
+
+
+----- Epoch 13 -----	
+train loss = 	0.4209862947464	
+hierarchy train loss = 	0.23178654909134	
+Evaluating...	
+----------------- Embeddings Test -----------------	
+Accuracy = 	0.3058	
+Handcrafted heirarchical Precision = 	0.50387999999967	
+Visual heirarchical Precision = 	0.50423333333301	
+Imagenet heirarchical Precision = 	0.49469999999968	
+saving cnn model to 	results/Rand	/cnnModel_save.model	
+saving model to 	results/Rand	/model_save.model	
+saving code words to 	results/Rand	./CodeWords.t7	
+
+
+----- Epoch 14 -----	
+train loss = 	0.41437920928001	
+hierarchy train loss = 	0.23066580295563	
+Evaluating...	
+----------------- Embeddings Test -----------------	
+Accuracy = 	0.3062	
+Handcrafted heirarchical Precision = 	0.50566666666634	
+Visual heirarchical Precision = 	0.50712666666634	
+Imagenet heirarchical Precision = 	0.49592666666635	
+saving cnn model to 	results/Rand	/cnnModel_save.model	
+saving model to 	results/Rand	/model_save.model	
+saving code words to 	results/Rand	./CodeWords.t7	
+
+
+----- Epoch 15 -----	
+train loss = 	0.39770969748497	
+hierarchy train loss = 	0.2329980880022	
+Evaluating...	
+----------------- Embeddings Test -----------------	
+Accuracy = 	0.3098	
+Handcrafted heirarchical Precision = 	0.507973333333	
+Visual heirarchical Precision = 	0.509413333333	
+Imagenet heirarchical Precision = 	0.49757333333301	
+saving cnn model to 	results/Rand	/cnnModel_save.model	
+saving model to 	results/Rand	/model_save.model	
+saving code words to 	results/Rand	./CodeWords.t7	
+
+
+----- Epoch 16 -----	
+train loss = 	0.40941426157951	
+hierarchy train loss = 	0.22951851785183	
+Evaluating...	
+----------------- Embeddings Test -----------------	
+Accuracy = 	0.3112	
+Handcrafted heirarchical Precision = 	0.512913333333	
+Visual heirarchical Precision = 	0.51201999999967	
+Imagenet heirarchical Precision = 	0.50319333333301	
+saving cnn model to 	results/Rand	/cnnModel_save.model	
+saving model to 	results/Rand	/model_save.model	
+saving code words to 	results/Rand	./CodeWords.t7	
+
+
+----- Epoch 17 -----	
+train loss = 	0.41144958138466	
+hierarchy train loss = 	0.22995150089264	
+Evaluating...	
+----------------- Embeddings Test -----------------	
+Accuracy = 	0.3102	
+Handcrafted heirarchical Precision = 	0.513993333333	
+Visual heirarchical Precision = 	0.515133333333	
+Imagenet heirarchical Precision = 	0.50353999999967	
+saving cnn model to 	results/Rand	/cnnModel_save.model	
+saving model to 	results/Rand	/model_save.model	
+saving code words to 	results/Rand	./CodeWords.t7	
+
+
+----- Epoch 18 -----	
+train loss = 	0.40780118107796	
+hierarchy train loss = 	0.23435832560062	
+Evaluating...	
+----------------- Embeddings Test -----------------	
+Accuracy = 	0.307	
+Handcrafted heirarchical Precision = 	0.51804666666633	
+Visual heirarchical Precision = 	0.51710666666633	
+Imagenet heirarchical Precision = 	0.507273333333	
+saving cnn model to 	results/Rand	/cnnModel_save.model	
+saving model to 	results/Rand	/model_save.model	
+saving code words to 	results/Rand	./CodeWords.t7	
+
+
+----- Epoch 19 -----	
+train loss = 	0.41471964120865	
+hierarchy train loss = 	0.22533285617828	
+Evaluating...	
+----------------- Embeddings Test -----------------	
+Accuracy = 	0.3098	
+Handcrafted heirarchical Precision = 	0.51857999999966	
+Visual heirarchical Precision = 	0.51860666666633	
+Imagenet heirarchical Precision = 	0.507633333333	
+saving cnn model to 	results/Rand	/cnnModel_save.model	
+saving model to 	results/Rand	/model_save.model	
+saving code words to 	results/Rand	./CodeWords.t7	
+
+
+----- Epoch 20 -----	
+train loss = 	0.43142977356911	
+hierarchy train loss = 	0.232112839818	
+Evaluating...	
+----------------- Embeddings Test -----------------	
+Accuracy = 	0.313	
+Handcrafted heirarchical Precision = 	0.52312666666632	
+Visual heirarchical Precision = 	0.52169333333299	
+Imagenet heirarchical Precision = 	0.51232666666633	
+saving cnn model to 	results/Rand	/cnnModel_save.model	
+saving model to 	results/Rand	/model_save.model	
+saving code words to 	results/Rand	./CodeWords.t7	
+Training complete, go home	
