@@ -7,7 +7,7 @@ require 'hdf5'
 function convert2h5(inFileName, format)
 format = format or 'ascii'
 inData = torch.load(inFileName, format)
-outFileName = inFileName:sub(1,-4)..'h5'
+outFileName = inFileName:sub(1,-3)..'h5'
 outFile = hdf5.open(outFileName, 'w')
 outFile:write('/data', inData)
 outFile:close()
