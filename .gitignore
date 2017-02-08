@@ -1,4 +1,7 @@
 *.model
+*.t7
+*.h5
 results/
 testResults/
+hierarchies/
 
