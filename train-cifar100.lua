@@ -29,6 +29,7 @@ require 'cudnn'
 require 'nngraph'
 require 'train-helpers'
 require 'ConstLinear'
+require 'h5tools.lua'
 local nninit = require 'nninit'
 
 opt = lapp[[
@@ -58,22 +59,22 @@ print("Dataset size: ", dataTrain:size())
 
 -- load tree based matrix H for the used hierarchy 
 if opt.hier == "Hand" then
-	treeVecMat = torch.load('treeVecMat.t7'):t()
+	treeVecMat = torch.load('hierarchies/treeVecMat.t7'):t()
 elseif opt.hier == "Visual" then
-	treeVecMat = torch.load('treeVecMatVis.t7', 'ascii'):t()
+	treeVecMat = torch.load('hierarchies/treeVecMatVis.t7', 'ascii'):t()
 elseif opt.hier == "Imgnt" then
-	treeVecMat = torch.load('treeVecMatImgnt.t7', 'ascii'):t()
+	treeVecMat = torch.load('hierarchies/treeVecMatImgnt.t7', 'ascii'):t()
 elseif opt.hier == "Rand" then
-	treeVecMat = torch.load('treeVecMatRand.t7', 'ascii'):t()
+	treeVecMat = torch.load('hierarchies/treeVecMatRand.t7', 'ascii'):t()
 end
 for i = 2,treeVecMat:size(2) do
 treeVecMat:narrow(2,i,1):mul(1/i)
 end
 
 -- load different hierarchies neigbours ranks matrices
-neighboursMatHand = torch.load('neighboursMat.t7', 'ascii'):t()
-neighboursMatVis = torch.load('neighboursMatVis.t7', 'ascii'):t()
-neighboursMatImgnt = torch.load('neighboursMatImgnt.t7', 'ascii'):t()
+neighboursMatHand = torch.load('hierarchies/neighboursMat.t7', 'ascii'):t()
+neighboursMatVis = torch.load('hierarchies/neighboursMatVis.t7', 'ascii'):t()
+neighboursMatImgnt = torch.load('hierarchies/neighboursMatImgnt.t7', 'ascii'):t()
 
 
 model1 = nn.Sequential() 
@@ -368,6 +369,8 @@ function evalModel()
 		torch.save(opt.saveTo .. "/model_save.model", model)	
 		print("saving code words to ", opt.saveTo, "./CodeWords.t7")
 		torch.save(opt.saveTo .. "/CodeWords.t7", learntCodeWords)
+		convert2h5(opt.saveTo .. "/CodeWords.t7",'binary')
+
 	end
 
 	if (cnnSgdState.epochCounter or 0) > opt.epochs then
