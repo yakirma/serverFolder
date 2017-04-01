@@ -23,7 +23,7 @@ require 'optim'
 TrainingHelpers = {}
 
 
-function evaluateModel(model, cnnModel, datasetTest, dataTrain, batchSize, trainCodes, learntCodeWords, neighboursMat, neighboursMatVis, neighboursMatImgnt)
+function evaluateModel(model, cnnModel, datasetTest, dataTrain, batchSize, trainCodes, learntCodeWords, neighboursMat, neighboursMatVis, neighboursMatImgnt, subBatch, precNighboursNum, testSize)
    print("Evaluating...")
    model:evaluate()
    cnnModel:evaluate()
@@ -36,7 +36,13 @@ function evaluateModel(model, cnnModel, datasetTest, dataTrain, batchSize, train
    local correct5 = 0
    local total = 0
    local mseLoss = 0
-   local batches = torch.range(1, datasetTest:size()):long():split(batchSize)
+   local size = testSize or datasetTest:size()
+   local batches = torch.range(1, size):long():split(batchSize)
+   local K =  precNighboursNum
+
+   if subBatch ~= 0 then			
+	batches = {subBatch}
+   end
    for i=1,#batches do
        collectgarbage(); collectgarbage();
        local results = datasetTest:sampleIndices(nil, batches[i])
@@ -52,6 +58,7 @@ function evaluateModel(model, cnnModel, datasetTest, dataTrain, batchSize, train
 	      	idx1 =  i
 	      end
        end
+--print(#batch)
        inputs = cnnModel:forward(batch:cuda()) 
        total = total + labels:size(1) 
 if trainCodes == 0 then
@@ -63,7 +70,7 @@ if trainCodes == 0 then
        -- indices has shape (batchSize, nClasses)
        local top1 = indices:select(2, 1)
        local top5 = indices:narrow(2, 1,5)
-       top30 = indices:narrow(2, 1,30)
+       topK = indices:narrow(2, 1,K)
        hadCorrect1 = hadCorrect1 + torch.eq(top1, labels):sum()
        hadCorrect5 = hadCorrect5 + torch.eq(top5, labels:view(-1, 1):expandAs(top5)):sum()
        y1 = y
@@ -72,59 +79,64 @@ else
        local Y = model:forward({inputs, lebelsIndicVecs:cuda()})
 
        y1 = Y[1][1]:float()
-       y2 = Y[2]:float()
+       y2 = Y[2][1]:float()
        y4 = Y[1][2]:float()
-	   
+       y5 = Y[2][2]:float()	   
+--print("start")
+--print(#y1)
+--print(#y2)
+--print(y4)
+--print(#y5)
+
        codeWords = learntCodeWords	  
        top1 = labels:clone():zero() 
        top5 = torch.LongTensor(labels:size(1), 5):zero()
-       top30 = torch.LongTensor(labels:size(1), 30):zero()
-
-        
+       topK = torch.LongTensor(labels:size(1), K):zero()
+ 
        local _, ranks = torch.sort(y4, 2, true)			
        top1 = ranks:select(2,1)
        top5 = ranks:narrow(2,1,5)
-       top30 = ranks:narrow(2,1,30)
+       topK = ranks:narrow(2,1,K)
        hadCorrect1 = hadCorrect1 + torch.eq(top1, labels):sum()
        hadCorrect5 = hadCorrect5 + torch.eq(top5, labels:view(-1, 1):expandAs(top5)):sum()
        mse = nn.MSECriterion()
        mseLoss = mse:forward(y1, y2)
 end
 
-       neighbours = top30:clone():zero()
+       neighbours = topK:clone():zero()
            for  j=1,y1:size(1) do
-                neighbours[j] = neighboursMat[labels[j]]:narrow(1,1,30)
+                neighbours[j] = neighboursMat[labels[j]]:narrow(1,1,K)
            end
 
 
        for j=1,y1:size(1) do
-                for i = 1,30 do
-                        heirPrecision =  heirPrecision + torch.eq(top30[j], neighbours[j][i]):sum()/30
+                for i = 1,K do
+                        heirPrecision =  heirPrecision + torch.eq(topK[j], neighbours[j][i]):sum()/K
                 end
        end
 
        
-      neighbours = top30:clone():zero()
+      neighbours = topK:clone():zero()
            for  j=1,y1:size(1) do
-                neighbours[j] = neighboursMatVis[labels[j]]:narrow(1,1,30)
+                neighbours[j] = neighboursMatVis[labels[j]]:narrow(1,1,K)
            end
 
 
        for j=1,y1:size(1) do
-                for i = 1,30 do
-                        heirPrecisionVis =  heirPrecisionVis + torch.eq(top30[j], neighbours[j][i]):sum()/30
+                for i = 1,K do
+                        heirPrecisionVis =  heirPrecisionVis + torch.eq(topK[j], neighbours[j][i]):sum()/K
                 end
        end
 
-       neighbours = top30:clone():zero()
+       neighbours = topK:clone():zero()
            for  j=1,y1:size(1) do
-                neighbours[j] = neighboursMatImgnt[labels[j]]:narrow(1,1,30)
+                neighbours[j] = neighboursMatImgnt[labels[j]]:narrow(1,1,K)
            end
 
 
        for j=1,y1:size(1) do
-                for i = 1,30 do
-                        heirPrecisionImgnt =  heirPrecisionImgnt + torch.eq(top30[j], neighbours[j][i]):sum()/30
+                for i = 1,K do
+                        heirPrecisionImgnt =  heirPrecisionImgnt + torch.eq(topK[j], neighbours[j][i]):sum()/K
                 end
        end
    
