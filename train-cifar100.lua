@@ -94,8 +94,8 @@ print("distMat max: ", distMat:max())
 
 distMat = distMat:clamp(1e-2, 2)
 weightMat = distMat:clone():fill(1):cdiv(distMat)
-weightMat = weightMat / 10
---weightMat = distMat
+weightMat = weightMat / 100
+--weightMat = distMati
 for i = 1,weightMat:size(1) do
 --weightMat[i][i] = 0
 end
@@ -247,16 +247,16 @@ function forwardBackwardBatch(isTrainCodes)
 	minNegs = 1
 	minScore = 0.5
 	rho = 0.3
-	hierDistTresh = 1
-	hierDistTresh2 = 1.5
+	hierDistTresh = 0
+	hierDistTresh2 = 0
 	loss1Coeff = 1
 	loss2Coeff = 1
 	loss3Coeff = 0
-	loss4Coeff = 0.1
+	loss4Coeff = 10
 	loss5Coeff = 1
 	trainCodes = 1
 	trainCnn = 1
-	if cnnSgdState.epochCounter < 0 then -- 0 then
+	if cnnSgdState.epochCounter < 10 then -- 0 then
 		if trainCodes == 0 then
 			sgdState6.learningRate = 0.01
 			cnnSgdState.learningRate = 0.01
