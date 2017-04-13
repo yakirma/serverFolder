@@ -30,6 +30,15 @@ function CIFAR:__init(path, mode, batchSize)
       self.labels[{ {1, 5000} }] = subset.labels:t()[{ {5001, 10000} }]
 
       self.labels = self.labels + 1
+   elseif mode == "fulltest" then
+      self.data = torch.Tensor(10000, 3*32*32)
+      self.labels = torch.Tensor(10000)
+      self.size = function() return 10000 end
+
+	  local subset = torch.load(path..'/test_batch.t7', 'ascii')
+      self.data = subset.data:t():double()
+      self.labels = subset.labels:t():double()
+      self.labels = self.labels + 1
    elseif mode == "valid" then
       self.data = torch.Tensor(tesize, 3*32*32)
       self.labels = torch.Tensor(tesize)
@@ -89,6 +98,8 @@ function CIFAR:sampleIndices(batch, indices)
          end
       end
    elseif self.mode=="test" then
+      batch.inputs:copy(self.data:index(1, indices))
+   elseif self.mode=="fulltest" then
       batch.inputs:copy(self.data:index(1, indices))
    elseif self.mode=="valid" then
       batch.inputs:copy(self.data:index(1, indices))
