@@ -46,6 +46,7 @@ opt = lapp[[
 --subTest	   (default 0)	        do test in batch size steps
 --loadModelsFrom   (default "")         load trained CNN model and embedding model 
 --precNighboursNum (default 30)         number of tree nigbours to be used for HP calculation
+--printGradInfo    (default 0)			plot information about inner products and grads of chosen classes pairs
 ]]
 print(opt)
 
@@ -222,6 +223,8 @@ local loss3Coeff = 1
 local loss4Coeff = 1
 local loss5Coeff = 1
 
+gradInfo = torch.Tensor(6, 3):zero()
+
 sgdState = sgdState6
 model = model6
 trainCodes = 0
@@ -256,7 +259,7 @@ function forwardBackwardBatch(isTrainCodes)
 	loss5Coeff = 1
 	trainCodes = 1
 	trainCnn = 1
-	if cnnSgdState.epochCounter < 10 then -- 0 then
+	if cnnSgdState.epochCounter < 0 then -- 0 then
 		if trainCodes == 0 then
 			sgdState6.learningRate = 0.01
 			cnnSgdState.learningRate = 0.01
@@ -427,6 +430,7 @@ end
 	justZeros = y12:clone():zero():cuda()
 	loss_val4 = lossMse12:forward(y12, justZeros)
 	df_dw4_ = lossMse12:backward(y12, justZeros)
+--print(df_dw4_)
 	df_dw4 = model15:backward({y5, {weightMat:reshape(1, weightMat:size(1), weightMat:size(2)):repeatTensor(lebelsIndicVecs:size(1),1,1):cuda(), lebelsIndicVecs:reshape(lebelsIndicVecs:size(1), lebelsIndicVecs:size(2), 1):repeatTensor(1,1,100):cudaByte()}}, df_dw4_)
 	--print(df_dw4[1])
 	-- train total model
@@ -450,23 +454,57 @@ end
 --print("y4-max: ", y4:max())
 --print("y4-min: ", y4:min())
 	y13 = model17:forward({y5, lebelsIndicVecs:cudaByte():eq(0)})
-
 	justZeros = y13:clone():zero():cuda()
 	loss_val5 = lossMse13:forward(y13, justZeros)
-    df_dw5_ = lossMse12:backward(y13, justZeros)
-	df_dw5 = model17:backward({y5, lebelsIndicVecs:cudaByte():eq(0)}, df_dw5_)
-	
-
+        df_dw5_ = lossMse13:backward(y13, justZeros)
+	df_dw5 = model17:backward({y5, lebelsIndicVecs:cudaByte():eq(0)}, df_dw5_)	
 	df_dw6 = model:backward({inputs1, lebelsIndicVecs:cuda()}, {{loss1Coeff * df_dw2[1], loss3Coeff * df_dw3 + 0*loss5Coeff * df_dw5[1]}, {loss2Coeff * df_dw2[2], loss4Coeff * df_dw4[1] + loss5Coeff * df_dw5[1]}})
 
---[[
-tmpVec = torch.Tensor(df_dw4[1]:narrow(1,1,1):t():size(1), 3):zero()
-tmpVec:narrow(2,1,1):copy(df_dw4[1]:narrow(1,1,1):t())
-tmpVec:narrow(2,2,1):copy(df_dw5[1]:narrow(1,1,1):t())
-tmpVec:narrow(2,3,1):copy(loss4Coeff * df_dw4[1]:narrow(1,1,1):t() + loss5Coeff * df_dw5[1]:narrow(1,1,1):t())
---]]
---print(tmpVec)
+
+--print(#df_dw4[1])
+--print(#labels:eq(1))
+--print(labels)
+--print(labels:eq(1))
+--print(idxs)
+ls1 = model15.output
+ls2 = model16.output[1]
+--print(ls1)
+--print(ls2)
+--print(df_dw4_)
+
+if labels:eq(1):sum() > 0 then 
+	idxs = labels:eq(1):resize(128,1):expand(128,100)
 	
+	gradInfo[1]:narrow(1,1,1):copy(loss4Coeff * ls1[idxs]:narrow(1,84,1):pow(2))
+	gradInfo[1]:narrow(1,2,1):copy(loss5Coeff * ls2[idxs]:narrow(1,84,1):pow(2))
+	gradInfo[1]:narrow(1,3,1):copy(loss4Coeff * ls1[idxs]:narrow(1,84,1):pow(2) + loss5Coeff * ls2[idxs]:narrow(1,84,1):pow(2))
+
+	gradInfo[2]:narrow(1,1,1):copy(loss4Coeff * df_dw4[1][idxs]:narrow(1,84,1))
+	gradInfo[2]:narrow(1,2,1):copy(loss5Coeff * df_dw5[1][idxs]:narrow(1,84,1))
+	gradInfo[2]:narrow(1,3,1):copy(loss4Coeff * df_dw4[1][idxs]:narrow(1,84,1) + loss5Coeff * df_dw5[1][idxs]:narrow(1,84,1))
+end
+if labels:eq(60):sum() > 0 then	
+	idxs = labels:eq(60):resize(128,1):expand(128,100)
+	
+	gradInfo[3]:narrow(1,1,1):copy(loss4Coeff * ls1[idxs]:narrow(1,44,1):pow(2))
+	gradInfo[3]:narrow(1,2,1):copy(loss5Coeff * ls2[idxs]:narrow(1,44,1):pow(2))
+	gradInfo[3]:narrow(1,3,1):copy(loss4Coeff * ls1[idxs]:narrow(1,44,1):pow(2) + loss5Coeff * ls2[idxs]:narrow(1,44,1):pow(2))
+
+	gradInfo[4]:narrow(1,1,1):copy(loss4Coeff * df_dw4[1][idxs]:narrow(1,44,1))
+	gradInfo[4]:narrow(1,2,1):copy(loss5Coeff * df_dw5[1][idxs]:narrow(1,44,1))
+	gradInfo[4]:narrow(1,3,1):copy(loss4Coeff * df_dw4[1][idxs]:narrow(1,44,1) + loss5Coeff * df_dw5[1][idxs]:narrow(1,44,1))
+end
+if labels:eq(70):sum() > 0 then	
+	idxs = labels:eq(70):resize(128,1):expand(128,100)
+	gradInfo[5]:narrow(1,1,1):copy(loss4Coeff * ls1[idxs]:narrow(1,74,1):pow(2))
+	gradInfo[5]:narrow(1,2,1):copy(loss5Coeff * ls2[idxs]:narrow(1,74,1):pow(2))
+	gradInfo[5]:narrow(1,3,1):copy(loss4Coeff * ls1[idxs]:narrow(1,74,1):pow(2) + loss5Coeff * ls2[idxs]:narrow(1,74,1):pow(2))
+
+	gradInfo[6]:narrow(1,1,1):copy(loss4Coeff * df_dw4[1][idxs]:narrow(1,74,1))
+	gradInfo[6]:narrow(1,2,1):copy(loss5Coeff * df_dw5[1][idxs]:narrow(1,74,1))
+	gradInfo[6]:narrow(1,3,1):copy(loss4Coeff * df_dw4[1][idxs]:narrow(1,74,1) + loss5Coeff * df_dw5[1][idxs]:narrow(1,74,1))
+end
+
 	if trainCnn == 1 then
 	    -- train cnn model
 		cnnModel:backward(inputs, df_dw6[1])
@@ -520,6 +558,15 @@ y12Losses = nil
                 print("Visual heirarchical Precision (K = 30) = ", results.heirPrecisionVis)
                 print("Imagenet heirarchical Precision (K = 30) = ", results.heirPrecisionImgnt)
 
+	end
+	
+	if opt.printGradInfo then
+		print("close classes prods = ", gradInfo[1][1], gradInfo[1][2], gradInfo[1][3])
+		print("close classes grads = ", gradInfo[2][1], gradInfo[2][2], gradInfo[2][3])
+		print("mid classes prods = ", gradInfo[3][1], gradInfo[3][2], gradInfo[3][3])
+		print("mid classes grads = ", gradInfo[4][1], gradInfo[4][2], gradInfo[4][3])
+		print("dist classes prods = ", gradInfo[5][1], gradInfo[5][2], gradInfo[5][3])
+		print("dist classes grads = ", gradInfo[6][1], gradInfo[6][2], gradInfo[6][3])
 	end
 
 	if opt.doValid == 1 then
